@@ -21,9 +21,9 @@ trait AddBalance{
             return response()->json($validator->errors(), 400);
         }
         
-        $this->account->balance += request('balance');
+        $updateBalanceRes = $this->updateBalance(request('balance'),"increase");
 
-        if($this->account->save()){
+        if($updateBalanceRes){
             return response()->json(array('status' => true,'success_message'=>'You have successfuly added the '.request('balance').' balance'  , 'current_balance' => $this->account->balance), 200);
         } else {
             return response()->json('Something went wrong', 400);

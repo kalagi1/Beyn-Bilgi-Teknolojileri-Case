@@ -59,7 +59,7 @@ class Order extends Account{
     
         /* Balance Update */
 
-
+        $this->updateBalance($service->service->price,"decrease");
 
         $order = ModelsOrder::create([
             "user_id" => $this->account->id,

@@ -44,12 +44,12 @@ class CheckAutoMobile extends Command
     public function handle()
     {
         $client = Http::get("https://static.novassets.com/automobile.json");
-        $resposeData = json_decode($client);
+        $responseData = json_decode($client);
         $automobiles = Cache::rememberForever("automobile",function(){
             return Model::select(DB::raw("models.* , brands.name as brand_name"))->join('brands','brands.id','=','models.brand_id')->get();
         });
         $temp = 0;
-        foreach($resposeData->RECORDS as $key=>$data){
+        foreach($responseData->RECORDS as $key=>$data){
             if(trim(Str::slug($data->model)) != $automobiles[$key-$temp]->slug){
                 $brand = Brand::create([
                     "name" => $data->brand,
@@ -67,5 +67,11 @@ class CheckAutoMobile extends Command
                 $temp++;
             }
         }
+
+        Cache::forget('automobile');
+
+        $automobiles = Cache::rememberForever("automobile",function($responseData){
+            return $responseData;
+        });
     }
 }
